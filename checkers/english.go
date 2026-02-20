@@ -7,21 +7,19 @@ import (
 
 func CheckEnglishOnly(msg string) error {
 	for _, r := range msg {
-		// Allow basic ASCII printable characters (space to tilde)
+		// разрешаем базовые ASCII-символы (от пробела до тильды)
 		if r >= 0x20 && r <= 0x7E {
 			continue
 		}
-		// Allow newline and tab
+		// разрешаем перевод строки и табуляцию
 		if r == '\n' || r == '\t' || r == '\r' {
 			continue
 		}
-		// Any other character is non-English
-		//if unicode.IsLetter(r) && r > 127 {
-
-		if !unicode.Is(unicode.Latin, r) {
+		// любой другой символ — не английский
+		if unicode.IsLetter(r) && r > 127 {
 			return fmt.Errorf("contains non-English character '%c' (U+%04X)", r, r)
 		}
-		// Emoji or other unicode
+		// эмодзи или другие юникод-символы
 		if r > 127 {
 			return fmt.Errorf("contains non-ASCII character '%c' (U+%04X)", r, r)
 		}

@@ -12,7 +12,7 @@ func CheckLowercase(msg string) error {
 		return nil
 	}
 
-	// Skip leading whitespace
+	// пропускаем начальные пробелы
 	trimmed := strings.TrimSpace(msg)
 	if len(trimmed) == 0 {
 		return nil
@@ -20,7 +20,7 @@ func CheckLowercase(msg string) error {
 
 	firstRune := []rune(trimmed)[0]
 
-	// If it's a letter, it should be lowercase
+	// если первый символ — буква, она должна быть строчной
 	if unicode.IsLetter(firstRune) && unicode.IsUpper(firstRune) {
 		return fmt.Errorf("starts with uppercase '%c'", firstRune)
 	}

@@ -14,7 +14,6 @@ var sensitiveKeywords = []string{
 	"api_key",
 	"apikey",
 	"api-key",
-	"api",
 	"auth",
 	"credential",
 	"private_key",
@@ -46,11 +45,11 @@ func CheckNoSensitiveData(msg string) error {
 
 	for _, keyword := range sensitiveKeywords {
 		if strings.Contains(msgLower, keyword) {
-			// Check if it's followed by ':', '=' or similar assignment patterns
+			// проверяем, следует ли за ключевым словом :, = или пробел
 			idx := strings.Index(msgLower, keyword)
 			remaining := msgLower[idx+len(keyword):]
 
-			// Check for patterns like "password:", "password=", "password "
+			// паттерны вида password:, password=, password
 			if len(remaining) > 0 {
 				nextChar := remaining[0]
 				if nextChar == ':' || nextChar == '=' || nextChar == ' ' {

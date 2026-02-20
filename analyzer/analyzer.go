@@ -25,18 +25,21 @@ func run(pass *analysis.Pass) (interface{}, error) {
 				return true
 			}
 
-			// проверяем, что это вызов функции X.Y
+			// ищем узел вида x.y
 			if selExpr, ok := callExpr.Fun.(*ast.SelectorExpr); ok {
-				// проверяем, что это идентификатор
+				// ищем узел с идентификатором
 				if ident, ok := selExpr.X.(*ast.Ident); ok {
+					// проверяем, что идентификатор - это log, slog или zap
 					if ident.Name == "log" || ident.Name == "slog" || ident.Name == "zap" {
 
 						for _, arg := range callExpr.Args {
+							// проверяем, что аргумент - это строковый литерал
 							lit, ok := arg.(*ast.BasicLit)
 							if !ok || lit.Kind != token.STRING {
 								continue
 							}
 
+							// распаковываем строковый литерал, чтобы получить его значение без кавычек
 							msg, err := strconv.Unquote(lit.Value)
 							if err != nil {
 								continue // Не удалось распарсить строку
