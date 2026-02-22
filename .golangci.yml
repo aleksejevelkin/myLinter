@@ -4,7 +4,10 @@ linters:
   default: none
   enable:
     - loglint
+
   settings:
     custom:
       loglint:
-        type: module
+        type: "module"
+        description: "Проверка log-сообщений: строчные буквы, только английский, спецсимволы/эмодзи, чувствительные данные"
+        settings: {}

@@ -3,3 +3,4 @@ version: v2.10.1
 plugins:
   - module: github.com/aleksejevelkin/myLinter
     path: .
+    import: github.com/aleksejevelkin/myLinter
