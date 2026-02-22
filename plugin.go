@@ -3,7 +3,7 @@ package loglint
 import (
 	//"github.com/aleksejevelkin/myLinter/analyzer"
 	"golang.org/x/tools/go/analysis"
-	"testSelectel/analyzer"
+	"github.com/aleksejevelkin/myLinter/analyzer"
 )
 
 func New(settings any) ([]*analysis.Analyzer, error) {
