@@ -1,0 +1,10 @@
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - loglint
+  settings:
+    custom:
+      loglint:
+        type: module
