@@ -3,7 +3,7 @@ package analyzer_test
 import (
 	"testing"
 
-	"testSelectel/analyzer"
+	"github.com/aleksejevelkin/myLinter/analyzer"
 
 	"golang.org/x/tools/go/analysis/analysistest"
 )

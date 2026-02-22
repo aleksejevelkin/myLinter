@@ -1,4 +1,4 @@
-module testSelectel
+module github.com/aleksejevelkin/myLinter
 
 go 1.26
 

@@ -1,10 +1,10 @@
 package analyzer
 
 import (
+	"github.com/aleksejevelkin/myLinter/checkers"
 	"go/ast"
 	"go/token"
 	"strconv"
-	"testSelectel/checkers"
 
 	"golang.org/x/tools/go/analysis"
 )
