@@ -10,7 +10,7 @@ var forbiddenChars = []rune{
 }
 
 func CheckSpecialChars(msg string) error {
-	// проверка повторяющейся пунктуации
+	// повторы !!! ??? ...
 	prevChar := rune(0)
 	repeatCount := 0
 	for _, r := range msg {
@@ -25,14 +25,14 @@ func CheckSpecialChars(msg string) error {
 		prevChar = r
 	}
 
-	// проверка эмодзи
+	// эмодзи
 	for _, r := range msg {
 		if isEmoji(r) {
 			return fmt.Errorf("contains emoji '%c' (U+%04X)", r, r)
 		}
 	}
 
-	// проверка запрещённых спецсимволов
+	// запрещённые символы
 	for _, r := range msg {
 		for _, forbidden := range forbiddenChars {
 			if r == forbidden {
@@ -43,7 +43,6 @@ func CheckSpecialChars(msg string) error {
 		}
 	}
 
-	// проверка многоточия
 	if strings.Contains(msg, "...") {
 		return fmt.Errorf("contains ellipsis '...'")
 	}
@@ -52,11 +51,10 @@ func CheckSpecialChars(msg string) error {
 }
 
 func isEmoji(r rune) bool {
-	// Распространённые диапазоны эмодзи
-	return (r >= 0x1F300 && r <= 0x1F9FF) || // Разные символы и пиктограммы, эмотиконы и т.д.
-		(r >= 0x2600 && r <= 0x26FF) || // Разные символы
-		(r >= 0x2700 && r <= 0x27BF) || // Дингбаты
-		(r >= 0x1F600 && r <= 0x1F64F) || // Эмотиконы
-		(r >= 0x1F680 && r <= 0x1F6FF) || // Символы транспорта и карт
-		(r >= 0x1F1E0 && r <= 0x1F1FF) // Флаги
+	return (r >= 0x1F300 && r <= 0x1F9FF) ||
+		(r >= 0x2600 && r <= 0x26FF) ||
+		(r >= 0x2700 && r <= 0x27BF) ||
+		(r >= 0x1F600 && r <= 0x1F64F) ||
+		(r >= 0x1F680 && r <= 0x1F6FF) ||
+		(r >= 0x1F1E0 && r <= 0x1F1FF)
 }

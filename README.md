@@ -76,6 +76,39 @@ linters:
 
 ---
 
+## Конфигурация правил
+
+Настройка делается в `.golangci.yml` в секции:
+
+- `linters.settings.custom.loglint.settings`
+
+Доступные параметры:
+
+- `lowercase` (bool) — проверка, что сообщение не начинается с заглавной буквы
+- `englishOnly` (bool) — проверка на не‑ASCII/не‑английские символы
+- `specialChars` (bool) — проверка на запрещённые спецсимволы/эмодзи/повторы
+- `sensitive` (bool) — проверка на чувствительные данные
+- `sensitiveKeywords` ([]string) — кастомный список ключевых слов для sensitive‑правила (опционально)
+
+По умолчанию все правила включены.
+
+Пример: отключить проверку спецсимволов и переопределить список sensitive‑ключей:
+
+```yaml
+linters:
+  settings:
+    custom:
+      loglint:
+        type: "module"
+        settings:
+          specialChars: false
+          sensitiveKeywords:
+            - password
+            - token
+```
+
+---
+
 ## Использование
 
 Запускайте линт **кастомным бинарником**, который вы собрали на шаге выше:
@@ -97,6 +130,70 @@ linters:
 ```bash
 ./custom-gcl linters
 ```
+
+---
+
+## Использование через custom-gcl (пошагово)
+
+`custom-gcl` — это кастомный бинарник `golangci-lint`, собранный командой `golangci-lint custom` на основе `.custom-gcl.yml`. Он уже «вшивает» в себя наш module‑плагин `loglint`.
+
+### 1) Собрать/обновить custom-gcl
+
+Собирать нужно после изменений в `plugin.go`, `analyzer/` или `checkers/`:
+
+```bash
+rm -f custom-gcl
+golangci-lint custom -v
+```
+
+> Подсказка: `-v` полезен, чтобы увидеть, что во время сборки добавился импорт `_ "github.com/aleksejevelkin/myLinter"`.
+
+### 2) Запуск линтера
+
+Проверить весь репозиторий:
+
+```bash
+./custom-gcl run ./...
+```
+
+Проверить только примеры:
+
+```bash
+./custom-gcl run ./example/...
+```
+
+Запустить с подробным выводом:
+
+```bash
+./custom-gcl run -v ./...
+```
+
+### 3) Посмотреть доступные линтеры
+
+```bash
+./custom-gcl linters
+```
+
+### 4) Как custom-gcl находит конфиг
+
+`./custom-gcl run` ищет `.golangci.yml` стандартным способом (в текущей директории и выше по дереву).
+
+Если нужно явно указать конфиг:
+
+```bash
+./custom-gcl run -c .golangci.yml ./...
+```
+
+---
+
+## Авто‑исправления (SuggestedFixes)
+
+Для части проблем `loglint` добавляет `SuggestedFixes`:
+
+- `lowercase`: делает первую букву строчной (например, `"Hello"` → `"hello"`)
+- `specialChars`: удаляет запрещённые символы (`@ # $ % ^ & * ~`) и сжимает повторы `! ? .`
+
+`golangci-lint` **показывает** эти подсказки, но **не применяет их автоматически**. Обычно они применляются через редактор/IDE (например, через `gopls` — Code Action / Quick Fix).
 
 ---
 

@@ -10,27 +10,39 @@ func init() {
 	register.Plugin("loglint", New)
 }
 
-type Settings struct{}
+type Settings struct {
+	Lowercase         *bool    `json:"lowercase" mapstructure:"lowercase"`
+	EnglishOnly       *bool    `json:"englishOnly" mapstructure:"englishOnly"`
+	SpecialChars      *bool    `json:"specialChars" mapstructure:"specialChars"`
+	Sensitive         *bool    `json:"sensitive" mapstructure:"sensitive"`
+	SensitiveKeywords []string `json:"sensitiveKeywords" mapstructure:"sensitiveKeywords"`
+}
 
 type Plugin struct {
-	settings Settings
+	cfg analyzer.Config
 }
 
 func New(settings any) (register.LinterPlugin, error) {
-	// Настройки сейчас не используются, но оставляем поддержку формата.
-	_, err := register.DecodeSettings[Settings](settings)
+	s, err := register.DecodeSettings[Settings](settings)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Plugin{settings: Settings{}}, nil
+	cfg := analyzer.Config{
+		Lowercase:         s.Lowercase,
+		EnglishOnly:       s.EnglishOnly,
+		SpecialChars:      s.SpecialChars,
+		Sensitive:         s.Sensitive,
+		SensitiveKeywords: s.SensitiveKeywords,
+	}
+
+	return &Plugin{cfg: cfg}, nil
 }
 
 func (p *Plugin) BuildAnalyzers() ([]*analysis.Analyzer, error) {
-	return []*analysis.Analyzer{analyzer.Analyzer}, nil
+	return []*analysis.Analyzer{analyzer.New(p.cfg)}, nil
 }
 
 func (p *Plugin) GetLoadMode() string {
-	// Мы используем только AST, без types info.
 	return register.LoadModeSyntax
 }

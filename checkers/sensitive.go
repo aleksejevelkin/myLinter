@@ -40,16 +40,30 @@ var sensitiveKeywords = []string{
 	"pin",
 }
 
+// CheckNoSensitiveData проверяет сообщение на наличие чувствительных данных,
+// используя дефолтный список ключевых слов.
 func CheckNoSensitiveData(msg string) error {
+	return CheckNoSensitiveDataWithKeywords(msg, nil)
+}
+
+// CheckNoSensitiveDataWithKeywords делает то же самое, но позволяет передать
+// кастомный список ключевых слов. Если keywords == nil или пустой, берётся
+// дефолтный список sensitiveKeywords.
+func CheckNoSensitiveDataWithKeywords(msg string, keywords []string) error {
 	msgLower := strings.ToLower(msg)
 
-	for _, keyword := range sensitiveKeywords {
+	kw := keywords
+	if len(kw) == 0 {
+		kw = sensitiveKeywords
+	}
+
+	for _, keyword := range kw {
 		if strings.Contains(msgLower, keyword) {
-			// проверяем, следует ли за ключевым словом :, = или пробел
+			// проверяем, следует ли за ключевым словом ':', '=' или пробел
 			idx := strings.Index(msgLower, keyword)
 			remaining := msgLower[idx+len(keyword):]
 
-			// паттерны вида password:, password=, password
+			// паттерны вида "password:", "password=", "password "
 			if len(remaining) > 0 {
 				nextChar := remaining[0]
 				if nextChar == ':' || nextChar == '=' || nextChar == ' ' {

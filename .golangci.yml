@@ -10,4 +10,13 @@ linters:
       loglint:
         type: "module"
         description: "Проверка log-сообщений: строчные буквы, только английский, спецсимволы/эмодзи, чувствительные данные"
-        settings: {}
+        settings:
+          lowercase: true
+          englishOnly: true
+          specialChars: true
+          sensitive: true
+          # Кастомный список ключевых слов для sensitive-правила (опционально).
+          # Если пусто/не задано — используется дефолтный список.
+          # sensitiveKeywords:
+          #   - password
+          #   - token
